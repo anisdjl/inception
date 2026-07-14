@@ -1,0 +1,80 @@
+version: '3.8'
+
+services:
+
+  mariadb:
+    container_name: mariadb
+    build:
+      context: ./requirements/mariadb
+      dockerfile: Dockerfile
+    image: mariadb
+    restart: always
+    env_file:
+      - .env
+    secrets:
+      - DB_USER_PASSWORD
+      - DB_ROOT_PASSWORD
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - inception_network
+
+  wordpress:
+    container_name: wordpress
+    build:
+        context: ./requirements/wordpress
+        dockerfile: Dockerfile
+    image: wordpress
+    restart: always
+    depends_on:
+      - mariadb
+    env_file:
+      - .env
+    secrets:
+      - DB_ROOT_PASSWORD
+      - credentials
+    volumes:
+      - wp_data:var/www/wordpress
+    networks:
+      - inception_network
+    
+  nginx:
+    container_name: nginx
+    build:
+        context: ./requirements/nginx
+        dockerfile: Dockerfile
+    image: nginx
+    restart: always
+    depends_on:
+      - wordpress
+    ports:
+      - 443:443
+    volumes:
+      - wp_data:var/www/wordpress
+    networks:
+      - inception_network
+
+  secrets:
+    DB_USER_PASSWORD:
+      file: ../secrets/db_password.txt
+    DB_ROOT_PASSWORD:
+      file: ../secrets/db_root_password.txt
+    credentials:
+      file: ../secrets/credentials.txt
+
+  volumes:
+    db_data:
+      name: db_data
+      driver: local
+      driver_opts:
+        device: /home/adjelili/data/mariadb
+    
+    wp_data:
+      name: wp_data
+      driver: local
+      driver_opts:
+        device: /home/adjelili/data/wordpress
+
+  networks:
+    inception_network:
+      driver: bridge

@@ -31,10 +31,10 @@ services:
     env_file:
       - .env
     secrets:
-      - DB_ROOT_PASSWORD
+      - DB_USER_PASSWORD
       - credentials
     volumes:
-      - wp_data:var/www/wordpress
+      - wp_data:/var/www/wordpress
     networks:
       - inception_network
     
@@ -50,31 +50,33 @@ services:
     ports:
       - 443:443
     volumes:
-      - wp_data:var/www/wordpress
+      - wp_data:/var/www/wordpress
     networks:
       - inception_network
 
-  secrets:
-    DB_USER_PASSWORD:
-      file: ../secrets/db_password.txt
-    DB_ROOT_PASSWORD:
-      file: ../secrets/db_root_password.txt
-    credentials:
-      file: ../secrets/credentials.txt
+secrets:
+  DB_USER_PASSWORD:
+    file: ../secrets/db_password.txt
+  DB_ROOT_PASSWORD:
+    file: ../secrets/db_root_password.txt
+  credentials:
+    file: ../secrets/credentials.txt
 
-  volumes:
-    db_data:
-      name: db_data
-      driver: local
-      driver_opts:
-        device: /home/adjelili/data/mariadb
+volumes:
+  db_data:
+    name: db_data
+    driver: local
+    driver_opts:
+      type: none
+      device: /home/adjelili/data/mariadb
     
-    wp_data:
-      name: wp_data
-      driver: local
-      driver_opts:
-        device: /home/adjelili/data/wordpress
+  wp_data:
+    name: wp_data
+    driver: local
+    driver_opts:
+      type: none
+      device: /home/adjelili/data/wordpress
 
-  networks:
-    inception_network:
-      driver: bridge
+networks:
+  inception_network:
+    driver: bridge

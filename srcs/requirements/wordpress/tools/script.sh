@@ -1,5 +1,9 @@
 #!/bin/bash
 
+SQL_PASSWORD=$(cat /run/secrets/DB_USER_PASSWORD)
+WP_ADMIN_PASSWORD=$(grep 'WP_ADMIN_PASSWORD' /run/secrets/credentials | cut -d '=' -f2)
+WP_USER_PASSWORD=$(grep 'WP_USER_PASSWORD' /run/secrets/credentials | cut -d '=' -f2)
+
 sleep 10
 
 cd /var/www/wordpress
@@ -9,19 +13,19 @@ if [ ! -f wp-config.php ]; then
     wp config create --allow-root \
              --dbname=${SQL_DATABASE} \
              --dbuser=${SQL_USER} \
-             --dbpass=${SQL_PASSWORD} \
+             --dbpass="${SQL_PASSWORD}" \
              --dbhost=mariadb:3306
 
     wp core install --allow-root \
         --url=${WP_URL} \
         --title=${WP_TITLE} \
         --admin_user=${WP_ADMIN_USER} \
-        --admin_password=${WP_ADMIN_PASSWORD} \
+        --admin_password="${WP_ADMIN_PASSWORD}" \
         --admin_email=${WP_ADMIN_EMAIL}
 
     wp user create ${WP_USER} ${WP_USER_EMAIL} --allow-root \
         --role=author \
-        --user_pass=${WP_USER_PASSWORD}
+        --user_pass="${WP_USER_PASSWORD}"
 
 fi
 

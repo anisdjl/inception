@@ -5,6 +5,7 @@ RUN apt-get update && apt-get upgrade -y && apt-get -y install wget
 RUN apt-get install -y php8.2\
     php-fpm\
     php-mysql\
+    php-redis\
     mariadb-client
 
 RUN wget https://wordpress.org/latest.tar.gz -P /var/www

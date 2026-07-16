@@ -16,6 +16,11 @@ if [ ! -f wp-config.php ]; then
              --dbpass="${SQL_PASSWORD}" \
              --dbhost=mariadb:3306
 
+    wp config set WP_REDIS_HOST redis --allow-root
+    wp config set WP_REDIS_PORT 6379 --allow-root
+
+    wp config set WP_CACHE_KEY_SALT ${WP_URL} --allow-root
+
     wp core install --allow-root \
         --url=${WP_URL} \
         --title=${WP_TITLE} \
@@ -26,7 +31,8 @@ if [ ! -f wp-config.php ]; then
     wp user create ${WP_USER} ${WP_USER_EMAIL} --allow-root \
         --role=author \
         --user_pass="${WP_USER_PASSWORD}"
-
+    wp plugin install redis-cache --activate --allow-root
+    wp redis enable --allow-root
 fi
 
 chown -R www-data:www-data /var/www/wordpress

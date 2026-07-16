@@ -28,6 +28,7 @@ services:
     restart: always
     depends_on:
       - mariadb
+      - redis
     env_file:
       - .env
     secrets:
@@ -51,6 +52,16 @@ services:
       - 443:443
     volumes:
       - wp_data:/var/www/wordpress
+    networks:
+      - inception_network
+  
+  redis:
+    container_name: redis
+    build:
+        context: ./requirements/bonus/redis
+        dockerfile: Dockerfile
+    image: redis
+    restart: always
     networks:
       - inception_network
 

@@ -65,6 +65,25 @@ services:
     networks:
       - inception_network
 
+  ftp:
+    container_name: ftp
+    build:
+        context: ./requirements/bonus/ftp
+        dockerfile: Dockerfile
+    image: ftp
+    restart: always
+    ports:
+      - "21:21"
+      - "40000-40005:40000-40005"
+    volumes:
+      - wp_data:/var/www/wordpress
+    env_file:
+      - .env
+    secrets:
+      - FTP_PASSWORD
+    networks:
+      - inception_network
+
 secrets:
   DB_USER_PASSWORD:
     file: ../secrets/db_password.txt
@@ -72,6 +91,8 @@ secrets:
     file: ../secrets/db_root_password.txt
   credentials:
     file: ../secrets/credentials.txt
+  FTP_PASSWORD:
+    file: ../secrets/ftp_password.txt
 
 volumes:
   db_data:

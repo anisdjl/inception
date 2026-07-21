@@ -1,0 +1,21 @@
+body {
+    background-color: #0f172a;
+    color: #38bdf8;
+    font-family: system-ui, sans-serif;
+    text-align: center;
+    margin: 0;
+    padding: 20px;
+}
+
+h1 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+}
+
+.cv-container img {
+    max-width: 900px;
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+}

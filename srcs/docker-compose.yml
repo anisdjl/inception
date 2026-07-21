@@ -48,6 +48,8 @@ services:
     restart: always
     depends_on:
       - wordpress
+      - website
+      - adminer
     ports:
       - 443:443
     volumes:
@@ -84,6 +86,41 @@ services:
     networks:
       - inception_network
 
+  website:
+    container_name: website
+    build:
+        context: ./requirements/bonus/website
+        dockerfile: Dockerfile
+    image: website
+    restart: always
+    networks:
+      - inception_network
+
+  adminer:
+    container_name: adminer
+    build:
+        context: ./requirements/bonus/adminer
+        dockerfile: Dockerfile
+    image: adminer
+    restart: always
+    depends_on:
+      - mariadb
+    networks:
+      - inception_network
+
+  portainer:
+    container_name: portainer
+    build:
+        context: ./requirements/bonus/portainer
+        dockerfile: Dockerfile
+    image: portainer
+    restart: always
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+    networks:
+      - inception_network
+
 secrets:
   DB_USER_PASSWORD:
     file: ../secrets/db_password.txt
@@ -110,6 +147,9 @@ volumes:
       type: none
       device: /home/adjelili/data/wordpress
       o: bind
+
+  portainer_data:
+
 networks:
   inception_network:
     driver: bridge
